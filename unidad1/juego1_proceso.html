@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ordena el proceso - Unidad 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#082e86;--blue:#0c38a0;--blue2:#1650c8;--gold:#e0b85a;--gold2:#c9a24a;--goldbg:#fbf5e6;--bg:#eef2fa;--ink:#1f2937;--soft:#44506a;--ok:#1f9d55;--okbg:#e8f7ee;--bad:#c2410c;--badbg:#fdf0e8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);font-family:Poppins,'Segoe UI',Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:980px;margin:0 auto;padding:clamp(14px,3vw,26px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.pill{display:inline-block;background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1.2px;padding:6px 12px;border-radius:999px}
+.bar{flex:1 1 180px;max-width:320px;height:10px;background:#d5ddee;border-radius:5px;overflow:hidden}.bar>div{height:100%;width:0;background:var(--gold);transition:width .3s}
+.hero{background:var(--blue);background-image:radial-gradient(ellipse at 50% 40%,var(--blue2) 0%,var(--blue) 60%,var(--navy) 100%);color:#fff;border-radius:16px;padding:clamp(16px,3vw,26px);border-bottom:4px solid var(--gold);margin-bottom:16px}
+.hero small{display:block;color:var(--gold);font-weight:800;letter-spacing:1px;font-size:12.5px;margin-bottom:6px}
+.hero .big{font-size:clamp(18px,2.6vw,25px);font-weight:800;line-height:1.35}
+.q{color:var(--navy);font-weight:800;margin:0 0 10px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;align-items:start}
+.opt{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;background:#fff;border:2px solid #c9d3e6;border-radius:12px;padding:14px 16px;color:var(--navy);font-weight:700;font-size:16px;line-height:1.35;transition:transform .1s,border-color .2s}
+.opt:hover{border-color:var(--gold)}.opt:active{transform:scale(.98)}
+.opt.ok{background:var(--okbg)!important;border:3px solid #1f9d55!important;border-color:#1f9d55!important;color:#14532d!important}.opt.bad{background:var(--badbg)!important;border:3px solid #c2410c!important;border-color:#c2410c!important;color:#7c2d12!important}.opt[disabled]{cursor:default}
+.fb{margin-top:14px;border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.55;display:none}
+.fb.ok{display:block;background:var(--okbg);border-left:6px solid var(--ok)}.fb.bad{display:block;background:var(--badbg);border-left:6px solid var(--bad)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{all:unset;cursor:pointer;background:var(--gold);color:var(--navy);font-weight:800;padding:11px 20px;border-radius:999px;font-size:15px}
+.btn.line{background:transparent;border:2px solid var(--navy);padding:9px 18px}.btn[disabled]{opacity:.4;cursor:default}
+.hide{display:none!important}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin:18px 0 6px}@media(max-width:560px){.board{grid-template-columns:1fr}}
+.end{text-align:center;background:#fff;border-radius:16px;padding:clamp(18px,4vw,34px);border-top:6px solid var(--gold)}
+.end .score{font-size:clamp(34px,6vw,56px);font-weight:900;color:var(--navy)}
+.end p{color:var(--soft);font-size:16px;line-height:1.6}
+.tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:1px;padding:4px 10px;border-radius:999px;background:var(--goldbg);color:#8a6a17;margin-bottom:8px}
+
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+.slot{min-height:92px;border:3px dashed #9fb0d4;border-radius:14px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;color:#8592ad;font-weight:800;cursor:pointer}
+.slot .n{width:30px;height:30px;border-radius:50%;background:#d5ddee;color:#082e86;display:flex;align-items:center;justify-content:center;font-weight:900;margin-bottom:6px}
+.slot.fill{border-style:solid;border-color:#0c38a0;background:#0c38a0;color:#fff}.slot.fill .n{background:#e0b85a}
+.slot.ok{border-color:#1f9d55;background:#1f9d55}.slot.bad{border-color:#c2410c;background:#c2410c}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:56px}
+.chip{all:unset;display:inline-block;cursor:pointer;background:#e0b85a;color:#082e86;font-weight:800;padding:12px 18px;border-radius:999px;font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.chip:active{transform:scale(.96)}
+.chip,.slot .item{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.slot .item{display:inline-block;padding:4px 8px;border-radius:8px}
+.slot.over{border-color:#e0b85a!important;background:#fbf5e6!important;color:#082e86!important;transform:scale(1.03)}
+.slot{transition:transform .15s,background .15s}
+@media(max-width:560px){.slots{grid-template-columns:1fr 1fr;gap:8px}.slot{min-height:74px;font-size:14px;padding:8px}.hero .big{font-size:17px}.chip{font-size:14.5px;padding:10px 14px}}
+
+</style></head><body><div class="wrap">
+<div id="p1">
+<div class="top"><span class="pill">PARTE 1 DE 2 · ORDENA</span><div class="bar"><div id="prog" style="width:0"></div></div></div>
+<div class="hero"><small>¿CÓMO ES EL PROCESO EMPRENDEDOR?</small><div class="big">Arrastra cada etapa a su lugar, en el orden correcto: desde el plano de las ideas hasta el plano práctico.</div><div style="margin-top:8px;font-size:14px;color:#dbe5f5">También puedes tocar una etapa para colocarla, y tocarla de nuevo para quitarla.</div></div>
+<div class="slots" id="slots"></div>
+<div class="chipzone" style="background:#fff;border:2px dashed #c9d3e6;border-radius:14px;padding:12px"><p class="q" style="text-align:center;margin-bottom:8px">Etapas disponibles:</p><div class="chips" id="chips"></div></div>
+<div class="fb" id="fb1"></div>
+<div class="row"><button class="btn line" id="reset">↻ Reiniciar</button><button class="btn" id="check" disabled>Comprobar</button></div>
+</div>
+<div id="p2" class="hide">
+<div class="top"><span class="pill" id="count">PARTE 2 DE 2 · RELACIONA</span><div class="bar"><div id="prog2" style="width:50%"></div></div></div>
+<div class="hero"><small>¿A QUÉ ETAPA CORRESPONDE?</small><div class="big" id="text"></div></div>
+<p class="q">Toca la etapa que corresponde a esta descripción:</p>
+<div class="grid" id="opts"></div>
+<div class="fb" id="fb"></div>
+<div class="row"><span style="color:#44506a;font-size:14px">Aciertos: <b id="sc">0</b></span><button class="btn" id="next" disabled>Siguiente ›</button></div>
+</div>
+<div id="end" class="hide"><div class="end">
+<div class="tag">¡JUEGO TERMINADO!</div><div class="score" id="final"></div><p id="msg"></p>
+<p style="font-size:15px">En conclusión, <b>emprender es llevar a cabo el proceso desde el plano de las ideas hasta el plano práctico.</b></p>
+<div style="margin-top:16px"><button class="btn" id="again">↻ Volver a intentar</button></div></div></div></div><script>
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function $(s){return document.querySelector(s)}
+
+const ST=[["Creatividad", "💡", "Proceso cognitivo creativo para generar ideas nuevas."], ["Ideas", "💭", "Conceptos abstractos que viven en el universo teórico."], ["Innovación", "⚙️", "Ejecución de las ideas mediante su implementación práctica."], ["Modelo de negocio", "📊", "Metodología operativa para el desarrollo de la innovación."]];let slots=[null,null,null,null],pool=[],total=0,locked=false;
+function p1(){slots=[null,null,null,null];pool=shuffle([0,1,2,3]);$('#fb1').className='fb';renderP1()}
+function inPool(){return pool.filter(x=>!slots.includes(x))}
+function renderP1(){const s=$('#slots');s.innerHTML='';
+for(let k=0;k<4;k++){const d=document.createElement('div');const v=slots[k];d.className='slot'+(v!=null?' fill':'');d.dataset.slot=k;
+d.innerHTML='<div class="n">'+(k+1)+'</div>'+(v!=null?'<span class="item" data-item="'+v+'" data-from="'+k+'">'+ST[v][1]+' '+ST[v][0]+'</span>':'Arrastra aquí');s.appendChild(d)}
+const c=$('#chips');c.innerHTML='';inPool().forEach(x=>{const b=document.createElement('button');b.className='chip';b.dataset.item=x;b.dataset.from='pool';b.textContent=ST[x][1]+' '+ST[x][0];c.appendChild(b)});
+document.querySelectorAll('.chip,.slot .item').forEach(el=>el.addEventListener('pointerdown',down));
+$('#check').disabled=slots.includes(null);$('#prog').style.width=(slots.filter(v=>v!=null).length/4*50)+'%'}
+function place(item,from,to){ // to: slot index or 'pool'
+ if(from!=='pool')slots[from]=null;
+ if(to!=='pool'){const prev=slots[to];slots[to]=item;if(prev!=null&&from!=='pool')slots[from]=prev;}
+ $('#fb1').className='fb';renderP1()}
+let drag=null;
+function down(e){if(locked)return;const el=e.currentTarget;e.preventDefault();
+ drag={el:el,item:+el.dataset.item,from:el.dataset.from==='pool'?'pool':+el.dataset.from,x:e.clientX,y:e.clientY,moved:false,ghost:null,id:e.pointerId};
+ window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cancel)}
+function target(x,y){const t=document.elementFromPoint(x,y);if(!t)return null;const sl=t.closest('.slot');if(sl)return +sl.dataset.slot;if(t.closest('#chips')||t.closest('.chipzone'))return 'pool';return null}
+function move(e){if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+ if(!drag.moved&&Math.hypot(dx,dy)>6){drag.moved=true;const g=drag.el.cloneNode(true);g.className='chip ghost';g.style.cssText='position:fixed;z-index:9999;pointer-events:none;left:0;top:0;opacity:.95;transform:scale(1.06);box-shadow:0 10px 24px rgba(0,0,0,.35)';document.body.appendChild(g);drag.ghost=g;drag.el.style.opacity='.35'}
+ if(drag.moved){if(e.clientY<70)window.scrollBy(0,-14);else if(e.clientY>innerHeight-70)window.scrollBy(0,14);const g=drag.ghost;g.style.left=(e.clientX-g.offsetWidth/2)+'px';g.style.top=(e.clientY-g.offsetHeight/2)+'px';
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('over'));const t=target(e.clientX,e.clientY);if(typeof t==='number')document.querySelectorAll('.slot')[t].classList.add('over')}}
+function end(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cancel);
+ if(drag&&drag.ghost)drag.ghost.remove();document.querySelectorAll('.slot').forEach(s=>s.classList.remove('over'));}
+function cancel(){end();drag=null;renderP1()}
+function up(e){const d=drag;end();drag=null;if(!d)return;
+ if(!d.moved){ // toque: chip -> primer espacio libre; ficha en espacio -> regresa
+  if(d.from==='pool'){const k=slots.indexOf(null);if(k>=0)place(d.item,'pool',k)}else place(d.item,d.from,'pool');return}
+ const t=target(e.clientX,e.clientY);
+ if(t===null){renderP1();return}
+ if(t===d.from){renderP1();return}
+ place(d.item,d.from,t)}
+$('#reset').onclick=()=>{p1()};
+$('#check').onclick=check;
+function check(){const sl=[...document.querySelectorAll('.slot')];let ok=true;slots.forEach((v,k)=>{sl[k].classList.add(v===k?'ok':'bad');if(v!==k)ok=false});
+ total++;const fb=$('#fb1');
+ if(ok){locked=true;fb.className='fb ok';fb.innerHTML='<b>✔ ¡Perfecto!</b> Todo parte de la <b>creatividad</b>, que genera <b>ideas</b>; las ideas pasan a la <b>innovación</b> al implementarlas, y la metodología para desarrollarla es el <b>modelo de negocio</b>.';$('#check').textContent='Continuar ›';$('#check').onclick=goP2}
+ else{fb.className='fb bad';fb.innerHTML='<b>✖ Aún no.</b> Las etapas en rojo están fuera de lugar. Pista: todo empieza con la <b>creatividad</b> y termina con el <b>modelo de negocio</b>. Arrastra las etapas para cambiarlas de lugar y vuelve a comprobar.';
+  setTimeout(()=>{document.querySelectorAll('.slot').forEach(x=>x.classList.remove('ok','bad'))},1800)}}
+let q=[],i=0,answered=false,sc2=0;
+function goP2(){$('#p1').classList.add('hide');$('#p2').classList.remove('hide');q=shuffle([0,1,2,3]);i=0;sc2=0;$('#sc').textContent=0;show();window.scrollTo(0,0)}
+function show(){answered=false;$('#count').textContent='PARTE 2 DE 2 · RELACIONA ('+(i+1)+'/4)';$('#prog2').style.width=(50+i/4*50)+'%';$('#text').textContent=ST[q[i]][2];
+const box=$('#opts');box.innerHTML='';$('#fb').className='fb';ST.forEach((s,k)=>{const b=document.createElement('button');b.className='opt';b.textContent=s[1]+' '+s[0];b.onclick=()=>pick(k,b);box.appendChild(b)});
+$('#next').disabled=true;$('#next').textContent=i==3?'Ver resultado ›':'Siguiente ›'}
+function pick(k,b){if(answered)return;answered=true;const a=q[i];const bs=[...document.querySelectorAll('#opts .opt')];bs.forEach(x=>x.disabled=true);
+const ok=k===a;if(ok){sc2++;$('#sc').textContent=sc2}bs[a].classList.add('ok');if(!ok)b.classList.add('bad');
+const fb=$('#fb');fb.className='fb '+(ok?'ok':'bad');fb.innerHTML=(ok?'<b>✔ ¡Correcto!</b> ':'<b>✖ No es correcto.</b> ')+'Esta descripción corresponde a <b>'+ST[a][0].toLowerCase()+'</b>.';$('#next').disabled=false}
+$('#next').onclick=()=>{if(i<3){i++;show()}else finish()};
+function finish(){$('#p2').classList.add('hide');$('#end').classList.remove('hide');$('#final').textContent=sc2+' / 4';$('#msg').innerHTML=(total===1?'Ordenaste el proceso <b>al primer intento</b>. ':'Ordenaste el proceso en <b>'+total+' intentos</b>. ')+(sc2==4?'¡Excelente! Relacionaste todas las etapas. 🎉':'Repasa las descripciones de cada etapa y vuelve a intentarlo. 💪');window.scrollTo(0,0)}
+$('#again').onclick=()=>location.reload();
+p1();
+
+</script></body></html>
