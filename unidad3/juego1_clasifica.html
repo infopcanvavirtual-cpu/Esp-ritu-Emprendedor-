@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clasifica tus finanzas - Unidad 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#082e86;--blue:#0c38a0;--blue2:#1650c8;--gold:#e0b85a;--gold2:#c9a24a;--goldbg:#fbf5e6;--bg:#eef2fa;--ink:#1f2937;--soft:#44506a;--ok:#1f9d55;--okbg:#e8f7ee;--bad:#c2410c;--badbg:#fdf0e8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);font-family:Poppins,'Segoe UI',Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:980px;margin:0 auto;padding:clamp(14px,3vw,26px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.pill{display:inline-block;background:var(--navy);color:var(--gold);font-weight:800;font-size:12px;letter-spacing:1.2px;padding:6px 12px;border-radius:999px}
+.bar{flex:1 1 180px;max-width:320px;height:10px;background:#d5ddee;border-radius:5px;overflow:hidden}.bar>div{height:100%;width:0;background:var(--gold);transition:width .3s}
+.hero{background:var(--blue);background-image:radial-gradient(ellipse at 50% 40%,var(--blue2) 0%,var(--blue) 60%,var(--navy) 100%);color:#fff;border-radius:16px;padding:clamp(16px,3vw,26px);border-bottom:4px solid var(--gold);margin-bottom:16px}
+.hero small{display:block;color:var(--gold);font-weight:800;letter-spacing:1px;font-size:12.5px;margin-bottom:6px}
+.hero .big{font-size:clamp(18px,2.6vw,25px);font-weight:800;line-height:1.35}
+.q{color:var(--navy);font-weight:800;margin:0 0 10px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;align-items:start}
+.opt{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;background:#fff;border:2px solid #c9d3e6;border-radius:12px;padding:14px 16px;color:var(--navy);font-weight:700;font-size:16px;line-height:1.35;transition:transform .1s,border-color .2s}
+.opt:hover{border-color:var(--gold)}.opt:active{transform:scale(.98)}
+.opt.ok{background:var(--okbg)!important;border:3px solid #1f9d55!important;border-color:#1f9d55!important;color:#14532d!important}.opt.bad{background:var(--badbg)!important;border:3px solid #c2410c!important;border-color:#c2410c!important;color:#7c2d12!important}.opt[disabled]{cursor:default}
+.fb{margin-top:14px;border-radius:12px;padding:14px 16px;font-size:15.5px;line-height:1.55;display:none}
+.fb.ok{display:block;background:var(--okbg);border-left:6px solid var(--ok)}.fb.bad{display:block;background:var(--badbg);border-left:6px solid var(--bad)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{all:unset;cursor:pointer;background:var(--gold);color:var(--navy);font-weight:800;padding:11px 20px;border-radius:999px;font-size:15px}
+.btn.line{background:transparent;border:2px solid var(--navy);padding:9px 18px}.btn[disabled]{opacity:.4;cursor:default}
+.hide{display:none!important}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin:18px 0 6px}@media(max-width:560px){.board{grid-template-columns:1fr}}
+.end{text-align:center;background:#fff;border-radius:16px;padding:clamp(18px,4vw,34px);border-top:6px solid var(--gold)}
+.end .score{font-size:clamp(34px,6vw,56px);font-weight:900;color:var(--navy)}
+.end p{color:var(--soft);font-size:16px;line-height:1.6}
+.tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:1px;padding:4px 10px;border-radius:999px;background:var(--goldbg);color:#8a6a17;margin-bottom:8px}
+
+</style></head><body><div class="wrap">
+<div id="play">
+<div class="top"><span class="pill" id="count">PREGUNTA 1</span><div class="bar"><div id="prog"></div></div></div>
+<div class="hero"><small id="kicker"></small><div class="big" id="text"></div></div>
+<p class="q" id="ask"></p>
+<div class="grid" id="opts"></div>
+<div class="fb" id="fb"></div>
+<div class="row"><span style="color:#44506a;font-size:14px">Aciertos: <b id="sc">0</b></span><button class="btn" id="next" disabled>Siguiente ›</button></div>
+</div>
+<div id="end" class="hide"><div class="end">
+<div class="tag">¡JUEGO TERMINADO!</div>
+<div class="score" id="final"></div>
+<p id="msg"></p>
+
+<div style="margin-top:16px"><button class="btn" id="again">↻ Volver a intentar</button></div>
+</div></div></div><script>
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function $(s){return document.querySelector(s)}
+
+const DATA=[{"k": "AHORRO O INVERSIÓN", "q": "¿Es ahorro o inversión?", "t": "Guardas dinero en un lugar seguro y sin riesgo para usarlo en el futuro.", "o": ["🐷 Ahorro", "📈 Inversión"], "a": 0, "why": "Guardar dinero en un lugar seguro y sin riesgo es <b>ahorro</b>.", "fix": true}, {"k": "AHORRO O INVERSIÓN", "q": "¿Es ahorro o inversión?", "t": "Pones tu dinero en un emprendimiento esperando que te aporte un dinero extra.", "o": ["🐷 Ahorro", "📈 Inversión"], "a": 1, "why": "Renunciar a gastar hoy para obtener un dinero extra en el futuro es <b>inversión</b>.", "fix": true}, {"k": "AHORRO O INVERSIÓN", "q": "¿Cuál tiene más riesgo?", "t": "Comparando ahorro e inversión…", "o": ["🐷 Ahorro", "📈 Inversión"], "a": 1, "why": "La <b>inversión</b> tiene un riesgo alto, que depende del emprendimiento; el ahorro tiene riesgo bajo.", "fix": true}, {"k": "TIPO DE FINANCIAMIENTO", "q": "¿Corto o largo plazo?", "t": "Un préstamo que debes pagar en 8 meses.", "o": ["⏱️ Corto plazo", "🗓️ Largo plazo"], "a": 0, "why": "Su vencimiento es inferior a un año: es de <b>corto plazo</b>.", "fix": true}, {"k": "TIPO DE FINANCIAMIENTO", "q": "¿Corto o largo plazo?", "t": "Un crédito para tu negocio que pagarás en 3 años.", "o": ["⏱️ Corto plazo", "🗓️ Largo plazo"], "a": 1, "why": "Su vencimiento es superior a un año: es de <b>largo plazo</b>.", "fix": true}, {"k": "TIPO DE FINANCIAMIENTO", "q": "¿Propio o ajeno?", "t": "Usas el dinero que ya generó tu propio emprendimiento.", "o": ["🏠 Propio", "🏦 Ajeno"], "a": 0, "why": "Son recursos de tu propio emprendimiento: financiamiento <b>propio</b>.", "fix": true}, {"k": "TIPO DE FINANCIAMIENTO", "q": "¿Propio o ajeno?", "t": "Pides un crédito al banco que debes devolver en un plazo determinado.", "o": ["🏠 Propio", "🏦 Ajeno"], "a": 1, "why": "Es dinero de terceros que debes devolver: financiamiento <b>ajeno</b>.", "fix": true}];const N=DATA.length;const SH=true;
+let order=[],i=0,score=0,answered=false;
+function start(){order=SH?shuffle(DATA):DATA.slice();i=0;score=0;$('#sc').textContent=0;$('#play').classList.remove('hide');$('#end').classList.add('hide');show()}
+function show(){answered=false;const d=order[i];$('#count').textContent='PREGUNTA '+(i+1)+' DE '+N;$('#prog').style.width=(i/N*100)+'%';
+$('#kicker').textContent=d.k;$('#ask').textContent=d.q;$('#text').innerHTML=d.t;const box=$('#opts');box.innerHTML='';$('#fb').className='fb';
+d.idx=shuffle(d.o.map((_,k)=>k));if(d.fix)d.idx=d.o.map((_,k)=>k);
+d.idx.forEach(k=>{const b=document.createElement('button');b.className='opt';b.innerHTML=d.o[k];b.dataset.k=k;b.onclick=()=>pick(k,b);box.appendChild(b)});
+$('#next').disabled=true;$('#next').textContent=i==N-1?'Ver resultado ›':'Siguiente ›'}
+function pick(k,b){if(answered)return;answered=true;const d=order[i];const bs=[...document.querySelectorAll('#opts .opt')];bs.forEach(x=>x.disabled=true);
+const ok=k===d.a;if(ok){score++;$('#sc').textContent=score}bs.find(x=>+x.dataset.k===d.a).classList.add('ok');if(!ok)b.classList.add('bad');
+const fb=$('#fb');fb.className='fb '+(ok?'ok':'bad');fb.innerHTML=(ok?'<b>✔ ¡Correcto!</b> ':'<b>✖ No es correcto.</b> La respuesta es <b>'+d.o[d.a].replace(/<[^>]+>/g,'')+'</b>. ')+d.why;$('#next').disabled=false}
+$('#next').onclick=()=>{if(i<N-1){i++;show();window.scrollTo(0,0)}else finish()};
+$('#again').onclick=start;
+function finish(){$('#prog').style.width='100%';$('#play').classList.add('hide');$('#end').classList.remove('hide');$('#final').textContent=score+' / '+N;const p=score/N;
+$('#msg').innerHTML=p==1?'¡Excelente! Dominas este tema. 🎉':p>=.7?'¡Muy bien! Repasa las que fallaste y vuelve a intentarlo.':'Sigue practicando: revisa nuevamente el contenido de la unidad y vuelve a intentarlo. 💪';window.scrollTo(0,0)}
+start();
+
+</script></body></html>
